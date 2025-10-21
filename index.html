@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>짝사랑 성공 확률 테스트 💘</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon.png">
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #fff0f5;
+      text-align: center;
+      padding: 40px;
+    }
+    form {
+      background: white;
+      padding: 24px;
+      border-radius: 12px;
+      display: inline-block;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      max-width: 440px;
+      text-align: left;
+    }
+    h1 { color: #ff69b4; text-align: center; }
+    label { display: block; margin: 10px 0 5px; }
+    input[type="text"] {
+      padding: 8px;
+      width: 90%;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+    .question { margin-top: 20px; }
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background: #ff69b4;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      width: 100%;
+    }
+    #result { margin-top: 25px; font-size: 20px; font-weight: bold; text-align: center; }
+  </style>
+</head>
+<body>
+  <h1>💘 짝사랑 성공 확률 테스트 💘</h1>
+
+  <form id="loveForm">
+    <label>당신의 이름:</label>
+    <input type="text" id="yourName" required>
+    <label>짝사랑 상대 이름:</label>
+    <input type="text" id="crushName" required>
+
+    <!-- 10개 질문 -->
+    <div id="questions"></div>
+
+    <button type="submit">결과 보기</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    // 질문 자동 생성
+    const questions = [
+      "상대방과 얼마나 자주 대화하나요?",
+      "상대가 나를 볼 때 미소를 짓나요?",
+      "내가 먼저 연락했을 때 반응은 어떤가요?",
+      "서로 SNS에서 팔로우하고 있나요?",
+      "상대가 나에게 관심을 보이나요?",
+      "답장이 어떤가요?",
+      "상대가 먼저 연락한 적 있나요?",
+      "내 이야기나 일상에 관심을 보이나요?",
+      "내 농담에 자주 웃나요?",
+      "나를 챙겨준 적이 있나요?"
+    ];
+
+    const options = [
+      ["20","50","80","100"]
+    ];
+
+    const container = document.getElementById("questions");
+    questions.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.classList.add("question");
+      div.innerHTML = `
+        <label>${i+1}. ${q}</label>
+        <label><input type="radio" name="q${i+1}" value="20"> 전혀 아니요</label>
+        <label><input type="radio" name="q${i+1}" value="50"> 가끔 그래요</label>
+        <label><input type="radio" name="q${i+1}" value="80"> 자주 그래요</label>
+        <label><input type="radio" name="q${i+1}" value="100"> 항상 그래요</label>
+      `;
+      container.appendChild(div);
+    });
+
+    // 제출 시 로직
+    document.getElementById("loveForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const yourName = document.getElementById("yourName").value.trim();
+      const crushName = document.getElementById("crushName").value.trim();
+      const resultBox = document.getElementById("result");
+
+      let total = 0, answered = 0;
+      for (let i=1; i<=10; i++) {
+        const selected = document.querySelector(`input[name="q${i}"]:checked`);
+        if (selected) { total += Number(selected.value); answered++; }
+      }
+      if (answered < 10) return resultBox.innerText = "⚠️ 모든 질문에 답해주세요!";
+
+      const percent = Math.round(total / 10);
+      let message = "";
+      if (percent < 40) message = "🥀 아직은 가능성이 낮아요...";
+      else if (percent < 70) message = "🌸 희망이 보여요!";
+      else if (percent < 90) message = "💞 좋은 분위기예요!";
+      else message = "🔥 완벽해요! 커플 예감!";
+
+      resultBox.innerHTML = `<b>${yourName}</b> ❤️ <b>${crushName}</b><br>짝사랑 성공 확률은 <span style="color:#ff69b4;">${percent}%</span><br>${message}`;
+    });
+
+    // PWA 설치 기능
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('service-worker.js');
+    }
+  </script>
+</body>
+</html>
